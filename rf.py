@@ -34,8 +34,10 @@ class RandomForest:
 
     def _predict(self, x):
         num_features = len(x[0]) - 1
+        # Predict the labels for x using every tree
         predictions = [tree.predict(x) for tree in self.trees]
         predictions = np.asarray(predictions)
+        # Choose the winning prediction for each feature, with a simple majority count
         return [np.bincount(fx).argmax() for fx in np.transpose(predictions)]
 
     def fit(self, x):
