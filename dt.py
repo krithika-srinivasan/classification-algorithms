@@ -80,8 +80,8 @@ class DecisionTree:
             if size == 0:
                 continue
             score = 0.0
+            classes_in_group = [row[-1] for row in group]
             for klass in classes:
-                classes_in_group = [row[-1] for row in group]
                 p = classes_in_group.count(klass) / size
                 score += p * p
             gini += (1.0 - score) * (size / num_values)
