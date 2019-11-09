@@ -120,6 +120,9 @@ class DecisionTree:
         return b_index, b_value, b_groups
 
     def to_terminal(self, group):
+        """
+        Return majority label for the group.
+        """
         klasses = [row[-1] for row in group]
         return max(set(klasses), key=klasses.count)
 
@@ -145,39 +148,32 @@ class DecisionTree:
             self.split(node.right, depth + 1)
         return
 
+    def _predict(self, node, target):
+        idx, val = node.index, node.value
+        tval = target[idx]
+        comparator = None
+        if isinstance(tval, str):
+            comparator = lambda x, y: x == y
+        elif isinstance(tval, (float, int)):
+            comparator = lambda x, y: x < y
+        if comparator(tval, val):
+            if isinstance(node.left, TreeNode):
+                return self._predict(node.left, target)
+            else:
+                return node.left
+        else:
+            if isinstance(node.right, TreeNode):
+                return self._predict(node.right, target)
+            else:
+                return node.right
+        return None
+
     def fit(self, x):
         root_idx, root_val, (root_left, root_right) = self.select_best_split(x)
         root = TreeNode(root_left, root_right, root_idx, root_val)
         self.split(root)
         self.root = root
         return root
-
-    def _predict(self, node, target):
-        idx, val = node.index, node.value
-        tval = target[idx]
-        if isinstance(tval, str):
-            if tval == val:
-                if isinstance(node.left, TreeNode):
-                    return self._predict(node.left, target)
-                else:
-                    return node.left
-            else:
-                if isinstance(node.right, TreeNode):
-                    return self._predict(node.right, target)
-                else:
-                    return node.right
-        elif isinstance(tval, (float, int)):
-            if tval < val:
-                if isinstance(node.left, TreeNode):
-                    return self._predict(node.left, target)
-                else:
-                    return node.left
-            else:
-                if isinstance(node.right, TreeNode):
-                    return self._predict(node.right, target)
-                else:
-                    return node.right
-        return None
 
     def predict(self, x):
         if not self.root:
