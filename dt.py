@@ -54,7 +54,7 @@ class TreeNode:
     @staticmethod
     def show_tree(root, depth=0):
         SPACER = " "
-        print("{0}[X{1} < {2:.4f}]".format(SPACER * depth, root.index, root.value))
+        print("{0}[X{1} < {2}]".format(SPACER * depth, root.index, root.value))
         if isinstance(root.left, TreeNode):
             TreeNode.show_tree(root.left, depth + 1)
         else:
