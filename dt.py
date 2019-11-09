@@ -11,6 +11,7 @@ def setup_argparser():
 
 def import_file(path):
     result = []
+    labels = []
     with open(path, "r") as f:
         lines = f.readlines()
         for line in lines:
@@ -19,17 +20,21 @@ def import_file(path):
                 continue
             vals = line.split("\t")
             row = []
-            for val in vals:
+            for idx, val in enumerate(vals):
                 val = val.strip()
                 if not val:
                     continue
                 try:
-                    row.append(float(val))
+                    if idx == len(vals) - 1:
+                        row.append(int(val))
+                        labels.append(int(val))
+                    else:
+                        row.append(float(val))
                 except:
                     row.append(val)
             result.append(row)
     assert all([len(row) == len(result[0]) for row in result]), "Not all rows have the same number of values"
-    return result
+    return result, labels
 
 class TreeNode:
     def __init__(self, left, right, index, value):
@@ -64,6 +69,7 @@ class DecisionTree:
     def __init__(self, max_depth=3, min_size=2):
         self.max_depth = max_depth
         self.min_size = min_size
+        self.root = None
         return
 
     def gini_index(self, groups, classes):
@@ -143,17 +149,58 @@ class DecisionTree:
         root_idx, root_val, (root_left, root_right) = self.select_best_split(x)
         root = TreeNode(root_left, root_right, root_idx, root_val)
         self.split(root)
+        self.root = root
         return root
 
+    def _predict(self, node, target):
+        idx, val = node.index, node.value
+        tval = target[idx]
+        if isinstance(tval, str):
+            if tval == val:
+                if isinstance(node.left, TreeNode):
+                    return self._predict(node.left, target)
+                else:
+                    return node.left
+            else:
+                if isinstance(node.right, TreeNode):
+                    return self._predict(node.right, target)
+                else:
+                    return node.right
+        elif isinstance(tval, (float, int)):
+            if tval < val:
+                if isinstance(node.left, TreeNode):
+                    return self._predict(node.left, target)
+                else:
+                    return node.left
+            else:
+                if isinstance(node.right, TreeNode):
+                    return self._predict(node.right, target)
+                else:
+                    return node.right
+        return None
 
+    def predict(self, x):
+        if not self.root:
+            raise ValueError("Decision Tree has not been fitted")
+        return [self._predict(self.root, row) for row in x]
+
+def accuracy(ltrue, lpred):
+    assert len(ltrue) == len(lpred), "Unequal number of labels in truth and predictions"
+    count = 0
+    for t, p in zip(ltrue, lpred):
+        if t == p:
+            count += 1
+    return count / len(ltrue)
 
 def main():
     args = setup_argparser().parse_args()
     filename = args.file
-    x = import_file(filename)
+    x, labels = import_file(filename)
     dt = DecisionTree(max_depth=3, min_size=2)
     tree = dt.fit(x)
     TreeNode.show_tree(tree)
+    predicted_labels = dt.predict(x)
+    print(accuracy(labels, predicted_labels))
     return
 
 if __name__ == "__main__":
