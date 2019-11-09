@@ -1,5 +1,6 @@
 import sys
 from argparse import ArgumentParser
+from util import import_file, accuracy
 
 INT_MAX = sys.maxsize
 INT_MIN = -(INT_MAX) - 1
@@ -10,33 +11,6 @@ def setup_argparser():
     parser.add_argument("--max-depth", help="Max depth of the tree", type=int, default=3)
     parser.add_argument("--min-size", help="Min number of samples required to potentially split a node", type=int, default=2)
     return parser
-
-def import_file(path):
-    result = []
-    labels = []
-    with open(path, "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            vals = line.split("\t")
-            row = []
-            for idx, val in enumerate(vals):
-                val = val.strip()
-                if not val:
-                    continue
-                try:
-                    if idx == len(vals) - 1:
-                        row.append(int(val))
-                        labels.append(int(val))
-                    else:
-                        row.append(float(val))
-                except:
-                    row.append(val)
-            result.append(row)
-    assert all([len(row) == len(result[0]) for row in result]), "Not all rows have the same number of values"
-    return result, labels
 
 class TreeNode:
     def __init__(self, left, right, index, value):
@@ -181,14 +155,6 @@ class DecisionTree:
         if not self.root:
             raise ValueError("Decision Tree has not been fitted")
         return [self._predict(self.root, row) for row in x]
-
-def accuracy(ltrue, lpred):
-    assert len(ltrue) == len(lpred), "Unequal number of labels in truth and predictions"
-    count = 0
-    for t, p in zip(ltrue, lpred):
-        if t == p:
-            count += 1
-    return count / len(ltrue)
 
 def main():
     args = setup_argparser().parse_args()
