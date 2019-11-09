@@ -23,7 +23,10 @@ def import_file(path):
                 val = val.strip()
                 if not val:
                     continue
-                row.append(float(val))
+                try:
+                    row.append(float(val))
+                except:
+                    row.append(val)
             result.append(row)
     assert all([len(row) == len(result[0]) for row in result]), "Not all rows have the same number of values"
     return result
@@ -49,11 +52,18 @@ class DecisionTree:
 
     def split(self, x, index, split_val):
         left, right = [], []
-        for row in x:
-            if row[index] < split_val:
-                left.append(row)
-            else:
-                right.append(row)
+        if isinstance(split_val, (float, int)):
+            for row in x:
+                if row[index] < split_val:
+                    left.append(row)
+                else:
+                    right.append(row)
+        elif isinstance(split_val, str):
+            for row in x:
+                if row[index] == split_val:
+                    left.append(row)
+                else:
+                    right.append(row)
         return left, right
 
     def select_best_split(self, x):
@@ -76,7 +86,9 @@ def main():
     args = setup_argparser().parse_args()
     filename = args.file
     x = import_file(filename)
-    print(len(x))
+    dt = DecisionTree()
+    idx, value, (left, right) = dt.select_best_split(x)
+    print(idx, value, len(left), len(right), len(x))
     return
 
 if __name__ == "__main__":
