@@ -7,6 +7,8 @@ INT_MIN = -(INT_MAX) - 1
 def setup_argparser():
     parser = ArgumentParser()
     parser.add_argument("--file", help="File to use for analysis", type=str)
+    parser.add_argument("--max-depth", help="Max depth of the tree", type=int, default=3)
+    parser.add_argument("--min-size", help="Min number of samples required to potentially split a node", type=int, default=2)
     return parser
 
 def import_file(path):
@@ -190,9 +192,13 @@ def accuracy(ltrue, lpred):
 
 def main():
     args = setup_argparser().parse_args()
+
     filename = args.file
+    max_depth = args.max_depth
+    min_size = args.min_size
+
     x, labels = import_file(filename)
-    dt = DecisionTree(max_depth=3, min_size=2)
+    dt = DecisionTree(max_depth=max_depth, min_size=min_size)
     tree = dt.fit(x)
     TreeNode.show_tree(tree)
     predicted_labels = dt.predict(x)
