@@ -5,6 +5,8 @@ library(MLmetrics)
 
 #Read the dataset
 path = 'data/Project3_dataset2.txt'
+k = 3
+
 data_raw<- read_delim(path, delim = '\t', col_names = FALSE)
 
 if(is.character(data_raw$X5) == TRUE){
@@ -90,7 +92,7 @@ for(i in 1:10){
   testIndexes <- which(folds==i,arr.ind=TRUE)
   data_test<- data_base[testIndexes, ]
   data_train <- data_base[-testIndexes, ]
-  nn <- knn(data_train, data_test, 3)
+  nn <- knn(data_train, data_test, k)
   acc = acc + nn$acc
   prec = prec + nn$prec
   rec = rec + nn$rec
