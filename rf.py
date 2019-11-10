@@ -33,7 +33,7 @@ class RandomForest:
         # Predict the labels for x using every tree
         predictions = [tree.predict(x) for tree in self.trees]
         # Choose the winning prediction for each feature, with a simple majority count
-        return [np.bincount(fx).argmax() for fx in np.transpose(predictions)]
+        return [np.bincount(feature).argmax() for feature in np.transpose(predictions)]
 
     def fit(self, x):
         trees = []
