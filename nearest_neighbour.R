@@ -54,7 +54,7 @@ knn <- function(data_train, data_test,k){
   
   #Join the training set with the distance table
   #Gives the distance of each row in the training set with every other row
-  data_expand <- data_test%>%
+  data_expand <- data_train%>%
     inner_join(data_dist)
   
   #Group by id to get the top n nearest neighbours for that point
