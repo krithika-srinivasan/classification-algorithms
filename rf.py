@@ -25,17 +25,13 @@ class RandomForest:
     def subsample(self, x, ratio=None):
         if ratio is None:
             ratio = self.sampling_ratio
-        samples = []
         num_samples = int(len(x) * ratio)
-        while len(samples) < num_samples:
-            idx = random.randrange(len(x))
-            samples.append(x[idx])
+        samples = random.sample(x, num_samples)
         return samples
 
     def _predict(self, x):
         # Predict the labels for x using every tree
         predictions = [tree.predict(x) for tree in self.trees]
-        predictions = np.asarray(predictions)
         # Choose the winning prediction for each feature, with a simple majority count
         return [np.bincount(fx).argmax() for fx in np.transpose(predictions)]
 
