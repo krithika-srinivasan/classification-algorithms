@@ -1,8 +1,9 @@
 import random
 import numpy as np
 from argparse import ArgumentParser
-from util import import_file, accuracy
 from dt import DecisionTree
+from cv import CrossValidation
+from util import import_file, accuracy
 
 def setup_argparser():
     parser = ArgumentParser()
@@ -63,8 +64,12 @@ def main():
     rf = RandomForest(num_trees=num_trees, sampling_ratio=sampling_ratio, max_depth=max_depth, min_size=min_size)
     rf.fit(x)
     predictions = rf.predict(x)
-    print(predictions)
-    print(accuracy(labels, predictions))
+    print("Naive accuracy", accuracy(labels, predictions))
+
+    ten_cv = CrossValidation(k=10)
+    rf = RandomForest(num_trees=num_trees, sampling_ratio=sampling_ratio, max_depth=max_depth, min_size=min_size)
+    train_scores, val_scores = ten_cv.cross_validate(rf, x, labels)
+    print("Training scores: {0}, validation scores: {1}".format(train_scores, val_scores))
     return
 
 if __name__=="__main__":

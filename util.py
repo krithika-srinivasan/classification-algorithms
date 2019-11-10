@@ -33,3 +33,6 @@ def accuracy(ltrue, lpred):
             count += 1
     return count / len(ltrue)
 
+def has_func(module, func_name):
+    return hasattr(module, func_name) and callable(getattr(module, func_name, None))
+

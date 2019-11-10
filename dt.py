@@ -1,5 +1,6 @@
 import sys
 from argparse import ArgumentParser
+from cv import CrossValidation
 from util import import_file, accuracy
 
 INT_MAX = sys.maxsize
@@ -184,7 +185,12 @@ def main():
     tree = dt.fit(x)
     TreeNode.show_tree(tree)
     predicted_labels = dt.predict(x)
-    print(accuracy(labels, predicted_labels))
+    print("Naive accuracy", accuracy(labels, predicted_labels))
+
+    ten_cv = CrossValidation(k=10)
+    dt = DecisionTree(max_depth=max_depth, min_size=min_size)
+    train_scores, val_scores = ten_cv.cross_validate(dt, x, labels)
+    print("Training scores: {0}, validation scores: {1}".format(train_scores, val_scores))
     return
 
 if __name__ == "__main__":
