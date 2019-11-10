@@ -42,6 +42,9 @@ class TreeNode:
         return
 
 class DecisionTree:
+    """
+    Binary decision tree.
+    """
     def __init__(self, max_depth=3, min_size=2):
         self.max_depth = max_depth
         self.min_size = min_size
@@ -64,6 +67,10 @@ class DecisionTree:
         return gini
 
     def _split(self, x, index, split_val):
+        """
+        Split the feature set into two branches, using the given
+        split value.
+        """
         left, right = [], []
         if isinstance(split_val, (float, int)):
             for row in x:
@@ -80,6 +87,9 @@ class DecisionTree:
         return left, right
 
     def select_best_split(self, x):
+        """
+        Choose the best feature value to split the dataset on.
+        """
         # Assuming the last value in a row is its class label
         uniq_classes = list(set([row[-1] for row in x]))
         num_features = len(x[0]) - 1
@@ -103,6 +113,9 @@ class DecisionTree:
         return max(set(klasses), key=klasses.count)
 
     def split(self, node, depth=1):
+        """
+        Recursively split the node, until we reach no-split condition.
+        """
         left, right = node.left, node.right
         if not left or not right:
             node.left = node.right = self.to_terminal(left + right)
@@ -125,6 +138,9 @@ class DecisionTree:
         return
 
     def _predict(self, node, target):
+        """
+        Traverse the node, until we reach a leaf, giving us a class value.
+        """
         idx, val = node.index, node.value
         tval = target[idx]
         comparator = None
