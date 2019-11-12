@@ -1,4 +1,5 @@
 import sys
+import random
 from argparse import ArgumentParser
 from cv import CrossValidation
 from util import import_file, accuracy
@@ -46,9 +47,15 @@ class DecisionTree:
     """
     Binary decision tree.
     """
-    def __init__(self, max_depth=3, min_size=2):
+    def __init__(self, max_depth=3, min_size=2, features_ratio=1.0):
+        """
+        max_depth - Max depth of the tree
+        min_size - Minimum number of elements that must be present in a node, to consider a split
+        features_ratio - Percentage of features to select while selecting a split
+        """
         self.max_depth = max_depth
         self.min_size = min_size
+        self.features_ratio = features_ratio
         self.root = None
         return
 
@@ -94,8 +101,10 @@ class DecisionTree:
         # Assuming the last value in a row is its class label
         uniq_classes = list(set([row[-1] for row in x]))
         num_features = len(x[0]) - 1
+        num_features_selected = int(num_features * self.features_ratio)
+        selected_features_indexes = random.sample(range(num_features), num_features_selected)
         b_index, b_value, b_score, b_groups = INT_MAX, INT_MAX, INT_MAX, None
-        for idx in range(num_features):
+        for idx in selected_features_indexes:
             for row in x:
                 groups = self._split(x, idx, row[idx])
                 gini = self.gini_index(groups, uniq_classes)
