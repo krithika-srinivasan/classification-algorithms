@@ -1,0 +1,206 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\date{}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+CSE 601 - Classification Algorithms Report
+\end_layout
+
+\begin_layout Author
+Dipack P Panjabi (50291077), Krithika Srinivasan (-)
+\end_layout
+
+\begin_layout Section
+Overview
+\end_layout
+
+\begin_layout Standard
+This project is about implementing 4 classification algorithms, and evaluating
+ their performance using 10 fold cross validation, measuring accuracy, precision
+, recall, and F-1 measure.
+ The 4 algorithms are k-Nearest Neighbour, Decision Tree, Naive Bayes, and
+ Random Forest.
+ The algorithms are tested on 2 provided data sets.
+\end_layout
+
+\begin_layout Section
+Implementation
+\end_layout
+
+\begin_layout Subsection
+Decision Tree
+\end_layout
+
+\begin_layout Standard
+The decision tree algorithm works as follows,
+\end_layout
+
+\begin_layout Enumerate
+Based on the data we have currently, we select the best feature to split
+ the data into two parts.
+ The best feature is selected by splitting the data along each feature,
+ for each feature value, and selecting the feature, and feature value, that
+ gives us the highest Gini index.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+A high Gini index means that the data is better distributed between both
+ branches of the binary decision tree node.
+ This is important in building a balanced decision tree with enough samples
+ on either branch.
+\end_layout
+
+\begin_layout Enumerate
+Gini index for a tree node can be calculated as follows
+\begin_inset Formula 
+\[
+GINI(x)=1-\sum_{j}[\ p(j|x)\ ]^{2}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $x$
+\end_inset
+
+ is the tree node, 
+\begin_inset Formula $p(j|x)$
+\end_inset
+
+ is the relative frequency of class 
+\begin_inset Formula $j$
+\end_inset
+
+ at node 
+\begin_inset Formula $x$
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Once we have the best feature split, we split the data set into two branches,
+ and then repeat step 1 on each of the branches, to give us further splits.
+ We repeat this process until we reach the maximum specified tree depth,
+ or we simply do not have the minimum required number of samples to justify
+ splitting the dataset any further.
+\end_layout
+
+\begin_layout Subsubsection
+Observations
+\end_layout
+
+\begin_layout Standard
+<Show results table here>
+\end_layout
+
+\begin_layout Standard
+Applying the decision tree algorithm to both sets shows us that the decision
+ tree approach works really well, especially for the first dataset.
+ The second dataset gives us a lower accuracy using decision trees, which
+ could be the presence of a non-numerical attribute, or more cohesive set
+ of data points, making them difficult to separate.
+\end_layout
+
+\begin_layout Standard
+Overall, the simple nature of decision trees, along with their relatively
+ easy implementation and prediction approach, makes this a good algorithm
+ to use for classification, especially if the data set is easier to split.
+\end_layout
+
+\begin_layout Standard
+The downside of decision trees is their brute force approach to computing
+ the best feature split at each level in the tree, which makes them scale
+ poorly for larger tree and dataset sizes.
+\end_layout
+
+\begin_layout Subsection
+Random Forest
+\end_layout
+
+\begin_layout Standard
+<Write here>
+\end_layout
+
+\end_body
+\end_document
