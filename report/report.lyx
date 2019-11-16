@@ -199,7 +199,45 @@ Random Forest
 \end_layout
 
 \begin_layout Standard
-<Write here>
+The random forest approach utilises multiple decision trees, each fitted
+ on a different subset of the input dataset, to predict the final class
+ labels.
+ Each split in a decision tree is also selected from a random subset of
+ the original feature set, different from a regular decision tree which
+ selects the best split from the entire feature set.
+\end_layout
+
+\begin_layout Standard
+Since this algorithm utilises multiple decision trees, we get a predicted
+ class label from each tree, with the final predicted class label chosen
+ using a simple majority vote.
+\end_layout
+
+\begin_layout Subsubsection
+Observations
+\end_layout
+
+\begin_layout Standard
+<Show results table here>
+\end_layout
+
+\begin_layout Standard
+The random forest approach performs better in our test runs, compared to
+ the decision tree approach, but not by a significant margin.
+ Where the random forest approach truly shines is in consistency when testing
+ against datasets other than the one it was trained on.
+ This is because the multiple independent trees, and the subset approach
+ to fit both the dataset and feature set, reduces the chances of the entire
+ forest overfitting to the training dataset.
+ Thus, this approach is superior to a lone decision tree.
+\end_layout
+
+\begin_layout Standard
+The downside of random forests is the correspondingly longer training and
+ prediction times compared to a lone decision tree, but in the grand scheme
+ of things, it still takes lesser time to do its job compared to more complicate
+d algorithms, with results that are just as good (if not better) than those
+ same algorithms.
 \end_layout
 
 \end_body

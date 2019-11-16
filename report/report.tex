@@ -1,0 +1,106 @@
+%% LyX 2.3.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\date{}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+\title{CSE 601 - Classification Algorithms Report}
+\author{Dipack P Panjabi (50291077), Krithika Srinivasan (-)}
+\maketitle
+
+\section{Overview}
+
+This project is about implementing 4 classification algorithms, and
+evaluating their performance using 10 fold cross validation, measuring
+accuracy, precision, recall, and F-1 measure. The 4 algorithms are
+k-Nearest Neighbour, Decision Tree, Naive Bayes, and Random Forest.
+The algorithms are tested on 2 provided data sets.
+
+\section{Implementation}
+
+\subsection{Decision Tree}
+
+The decision tree algorithm works as follows,
+\begin{enumerate}
+\item Based on the data we have currently, we select the best feature to
+split the data into two parts. The best feature is selected by splitting
+the data along each feature, for each feature value, and selecting
+the feature, and feature value, that gives us the highest Gini index.
+\begin{enumerate}
+\item A high Gini index means that the data is better distributed between
+both branches of the binary decision tree node. This is important
+in building a balanced decision tree with enough samples on either
+branch.
+\item Gini index for a tree node can be calculated as follows
+\[
+GINI(x)=1-\sum_{j}[\ p(j|x)\ ]^{2}
+\]
+where $x$ is the tree node, $p(j|x)$ is the relative frequency of
+class $j$ at node $x$.
+\end{enumerate}
+\item Once we have the best feature split, we split the data set into two
+branches, and then repeat step 1 on each of the branches, to give
+us further splits. We repeat this process until we reach the maximum
+specified tree depth, or we simply do not have the minimum required
+number of samples to justify splitting the dataset any further.
+\end{enumerate}
+
+\subsubsection{Observations}
+
+<Show results table here>
+
+Applying the decision tree algorithm to both sets shows us that the
+decision tree approach works really well, especially for the first
+dataset. The second dataset gives us a lower accuracy using decision
+trees, which could be the presence of a non-numerical attribute, or
+more cohesive set of data points, making them difficult to separate.
+
+Overall, the simple nature of decision trees, along with their relatively
+easy implementation and prediction approach, makes this a good algorithm
+to use for classification, especially if the data set is easier to
+split.
+
+The downside of decision trees is their brute force approach to computing
+the best feature split at each level in the tree, which makes them
+scale poorly for larger tree and dataset sizes.
+
+\subsection{Random Forest}
+
+The random forest approach utilises multiple decision trees, each
+fitted on a different subset of the input dataset, to predict the
+final class labels. Each split in a decision tree is also selected
+from a random subset of the original feature set, different from a
+regular decision tree which selects the best split from the entire
+feature set.
+
+Since this algorithm utilises multiple decision trees, we get a predicted
+class label from each tree, with the final predicted class label chosen
+using a simple majority vote.
+
+\subsubsection{Observations}
+
+<Show results table here>
+
+The random forest approach performs better in our test runs, compared
+to the decision tree approach, but not by a significant margin. Where
+the random forest approach truly shines is in consistency when testing
+against datasets other than the one it was trained on. This is because
+the multiple independent trees, and the subset approach to fit both
+the dataset and feature set, reduces the chances of the entire forest
+overfitting to the training dataset. Thus, this approach is superior
+to a lone decision tree.
+
+The downside of random forests is the correspondingly longer training
+and prediction times compared to a lone decision tree, but in the
+grand scheme of things, it still takes lesser time to do its job compared
+to more complicated algorithms, with results that are just as good
+(if not better) than those same algorithms.
+\end{document}
