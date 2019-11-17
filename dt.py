@@ -1,8 +1,9 @@
 import sys
 import random
+from sklearn.metrics import precision_score
 from argparse import ArgumentParser
 from cv import CrossValidation
-from util import import_file, accuracy
+from util import import_file, accuracy, get_metrics
 
 INT_MAX = sys.maxsize
 INT_MIN = -(INT_MAX) - 1
@@ -194,11 +195,14 @@ def main():
     tree = dt.fit(x)
     TreeNode.show_tree(tree)
     predicted_labels = dt.predict(x)
-    print("Naive accuracy", accuracy(labels, predicted_labels))
+    prec = precision_score(labels, predicted_labels)
+    p, r, f1 = get_metrics(labels, predicted_labels)
+    acc = accuracy(labels, predicted_labels)
+    print("Accuracy: {}, Precision: {}, Recall: {}, F-1: {}".format(acc, p, r, f1))
 
     ten_cv = CrossValidation(k=10)
     dt = DecisionTree(max_depth=max_depth, min_size=min_size)
-    train_scores, val_scores = ten_cv.cross_validate(dt, x, labels)
+    train_scores, val_scores, *_ = ten_cv.cross_validate(dt, x, labels)
     print("Training scores: {0}, validation scores: {1}".format(train_scores, val_scores))
     return
 
