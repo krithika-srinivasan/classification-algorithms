@@ -3,8 +3,14 @@
 \documentclass[english]{article}
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
+\usepackage{float}
 
 \makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \date{}
 
@@ -25,6 +31,36 @@ k-Nearest Neighbour, Decision Tree, Naive Bayes, and Random Forest.
 The algorithms are tested on 2 provided data sets.
 
 \section{Implementation}
+
+\subsection{Cross Validation}
+
+We perform 10 fold cross validation on each of the 4 algorithms to
+measure their performance.
+
+The algorithm works as follows,
+\begin{enumerate}
+\item Partition the data set into training and validation subsets. We do
+this by using the concept of a sliding window to partition the total
+dataset into each type. In this case, as we use 10 fold cross validation,
+the validation dataset is 10\% of the total dataset, with the rest
+used for training.
+\begin{enumerate}
+\item If we for example we have a total of 500 samples in the dataset, the
+first 50 samples are the validation set for the first fold, with the
+remaining used for training. The second fold uses samples indexed
+from 50 to 100 as the validation set, with samples indexed 0-49, and
+101-500 as the training, following the sliding window principle.
+\item We use this technique to divide the data into 10 sets, with each set
+containing a validation and training dataset.
+\end{enumerate}
+\item Once we have the training and validation datasets, we train the learner
+(e.g. Decision Tree) on the training dataset, and evaluate its performance
+by asking it to predict the class labels for both training and validation
+datasets.
+\item Once we have all predictions, we calculate the accuracy, precision,
+recall, and F-1 scores for both datasets.
+\item Repeat steps 1-3 for each fold.
+\end{enumerate}
 
 \subsection{Decision Tree}
 
@@ -55,7 +91,26 @@ number of samples to justify splitting the dataset any further.
 
 \subsubsection{Observations}
 
-<Show results table here>
+\begin{table}[H]
+\begin{tabular}{|c|c|c|c|c|}
+\hline 
+Data set & Accuracy (Train/Validation) & Precision (T/V) & Recall (T/V) & F-1 score (T/V)\tabularnewline
+\hline 
+\hline 
+dataset1 & 0.991/0.932 & 0.996/0.922 & 0.98/0.902 & 0.988/0.911\tabularnewline
+\hline 
+dataset2 & 0.824/0.663 & 0.815/0.523 & 0.651/0.445 & 0.718/0.464\tabularnewline
+\hline 
+\end{tabular}
+
+\caption{Decision Tree performance scores}
+
+\end{table}
+
+The max depth was set to 5 levels, and min number of samples required
+to split set to 2 samples, for both data sets. We found that these
+settings give us the best balance between training and validation
+dataset performance.
 
 Applying the decision tree algorithm to both sets shows us that the
 decision tree approach works really well, especially for the first
@@ -87,16 +142,43 @@ using a simple majority vote.
 
 \subsubsection{Observations}
 
-<Show results table here>
+\begin{table}[H]
+\begin{tabular}{|c|c|c|c|c|}
+\hline 
+Data set & Accuracy (Train/Validation) & Precision (T/V) & Recall (T/V) & F-1 score (T/V)\tabularnewline
+\hline 
+\hline 
+dataset1 & 0.988/0.955 & 0.998/0.967 & 0.97/0.91 & 0.984/0.937\tabularnewline
+\hline 
+dataset2 & 0.825/0.713 & 0.913/0.662 & 0.548/0.381 & 0.684/0.469\tabularnewline
+\hline 
+\end{tabular}
 
-The random forest approach performs better in our test runs, compared
-to the decision tree approach, but not by a significant margin. Where
-the random forest approach truly shines is in consistency when testing
-against datasets other than the one it was trained on. This is because
-the multiple independent trees, and the subset approach to fit both
-the dataset and feature set, reduces the chances of the entire forest
-overfitting to the training dataset. Thus, this approach is superior
-to a lone decision tree.
+\caption{Random Forest performance scores}
+\end{table}
+
+50 trees were planted in the random forest, with the max depth set
+to 5 levels, min number of samples required to split set to 2 samples,
+both the feature and sample sampling ratios set to 40\% for dataset
+1. We plant a 100 trees, for dataset 2, with all the other settings
+identical to dataset 1. We found that these settings give us the best
+balance between training and validation dataset performance.
+
+For the second dataset, we see that the most values, except for recall,
+are better than the decision tree approach, but not by much, whereas
+the first dataset gives much better results compared to its decision
+tree counterpart. This once again points to the fact that the second
+dataset is more cohesive, making it harder to find a good decision
+boundary.
+
+Where the random forest approach truly shines is in consistency when
+testing against datasets other than the one it was trained on. This
+is because the multiple independent trees, and the subset approach
+to fit both the dataset and feature set, help the forest learn a more
+intricate decision boundary, and reduces the chances of the entire
+forest overfitting to the training dataset. This, contrasted with
+the fact that a lone decision tree can only learn a linear decision
+boundary, gives random forest the edge.
 
 The downside of random forests is the correspondingly longer training
 and prediction times compared to a lone decision tree, but in the
