@@ -410,8 +410,10 @@ Decision Tree performance scores
 \end_layout
 
 \begin_layout Standard
-The max depth was set to 5 levels, and min size set to 2 samples, for both
- data sets.
+The max depth was set to 5 levels, and min number of samples required to
+ split set to 2 samples, for both data sets.
+ We found that these settings give us the best balance between training
+ and validation dataset performance.
 \end_layout
 
 \begin_layout Standard
@@ -458,18 +460,214 @@ Observations
 \end_layout
 
 \begin_layout Standard
-<Show results table here>
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Data set
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Accuracy (Train/Validation)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Precision (T/V)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Recall (T/V)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+F-1 score (T/V)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+dataset1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.988/0.955
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.998/0.967
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.97/0.91
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.984/0.937
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+dataset2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.825/0.713
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.913/0.662
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.548/0.381
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.684/0.469
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Random Forest performance scores
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-The random forest approach performs better in our test runs, compared to
- the decision tree approach, but not by a significant margin.
- Where the random forest approach truly shines is in consistency when testing
+50 trees were planted in the random forest, with the max depth set to 5
+ levels, min number of samples required to split set to 2 samples, both
+ the feature and sample sampling ratios set to 40% for dataset 1.
+ We plant a 100 trees, for dataset 2, with all the other settings identical
+ to dataset 1.
+ We found that these settings give us the best balance between training
+ and validation dataset performance.
+\end_layout
+
+\begin_layout Standard
+For the second dataset, we see that the most values, except for recall,
+ are better than the decision tree approach, but not by much, whereas the
+ first dataset gives much better results compared to its decision tree counterpa
+rt.
+ This once again points to the fact that the second dataset is more cohesive,
+ making it harder to find a good decision boundary.
+\end_layout
+
+\begin_layout Standard
+Where the random forest approach truly shines is in consistency when testing
  against datasets other than the one it was trained on.
  This is because the multiple independent trees, and the subset approach
- to fit both the dataset and feature set, reduces the chances of the entire
- forest overfitting to the training dataset.
- Thus, this approach is superior to a lone decision tree.
+ to fit both the dataset and feature set, help the forest learn a more intricate
+ decision boundary, and reduces the chances of the entire forest overfitting
+ to the training dataset.
+ This, contrasted with the fact that a lone decision tree can only learn
+ a linear decision boundary, gives random forest the edge.
 \end_layout
 
 \begin_layout Standard
