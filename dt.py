@@ -151,6 +151,7 @@ class DecisionTree:
                 node.left = self.to_terminal(left)
                 return
             ll, lr = ls
+            # If both leaves have the same terminal value, do not split.
             if len(ll) and len(lr) and self.check_if_same_terminal(ll, lr):
                 node.left = self.to_terminal(left)
             else:
@@ -166,6 +167,7 @@ class DecisionTree:
                 node.right = self.to_terminal(right)
                 return
             rl, rr = rs
+            # If both leaves have the same terminal value, do not split.
             if len(rl) and len(rr) and self.check_if_same_terminal(rl, rr):
                 node.right = self.to_terminal(right)
             else:
