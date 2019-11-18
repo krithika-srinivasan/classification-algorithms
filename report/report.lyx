@@ -173,6 +173,7 @@ Based on the data we have currently, we select the best feature to split
  The best feature is selected by splitting the data along each feature,
  for each feature value, and selecting the feature, and feature value, that
  gives us the highest Gini index.
+ We also do not use each feature value more than once.
 \end_layout
 
 \begin_deeper
@@ -462,6 +463,12 @@ The random forest approach utilises multiple decision trees, each fitted
 \end_layout
 
 \begin_layout Standard
+We select the subset of the dataset to train each of our decision trees
+ on, by sampling the original training set with replacement.
+ This technique is called bootstrap aggregation.
+\end_layout
+
+\begin_layout Standard
 Since this algorithm utilises multiple decision trees, we get a predicted
  class label from each tree, with the final predicted class label chosen
  using a simple majority vote.
@@ -604,7 +611,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.832/0.652
+0.801/0.641
 \end_layout
 
 \end_inset
@@ -613,7 +620,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.336/0.268
+0.399/0.310
 \end_layout
 
 \end_inset
@@ -622,7 +629,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.499/0.368
+0.520/0.386
 \end_layout
 
 \end_inset

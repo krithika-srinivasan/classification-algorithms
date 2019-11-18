@@ -71,6 +71,7 @@ The decision tree algorithm works as follows,
 split the data into two parts. The best feature is selected by splitting
 the data along each feature, for each feature value, and selecting
 the feature, and feature value, that gives us the highest Gini index.
+We also do not use each feature value more than once.
 \begin{enumerate}
 \item A high Gini index means that the data is better distributed between
 both branches of the binary decision tree node. This is important
@@ -139,6 +140,10 @@ from a random subset of the original feature set, different from a
 regular decision tree which selects the best split from the entire
 feature set.
 
+We select the subset of the dataset to train each of our decision
+trees on, by sampling the original training set with replacement.
+This technique is called bootstrap aggregation.
+
 Since this algorithm utilises multiple decision trees, we get a predicted
 class label from each tree, with the final predicted class label chosen
 using a simple majority vote.
@@ -153,7 +158,7 @@ Data set & Accuracy (Train/Validation) & Precision (T/V) & Recall (T/V) & F-1 sc
 \hline 
 dataset1 & 0.984/0.955 & 0.997/0.970 & 0.961/0.910 & 0.979/0.938\tabularnewline
 \hline 
-dataset2 & 0.752/0.693 & 0.832/0.652 & 0.336/0.268 & 0.499/0.368\tabularnewline
+dataset2 & 0.752/0.693 & 0.801/0.641 & 0.399/0.310 & 0.520/0.386\tabularnewline
 \hline 
 \end{tabular}
 

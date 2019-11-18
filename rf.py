@@ -36,7 +36,8 @@ class RandomForest:
         if ratio is None:
             ratio = self.sampling_ratio
         num_samples = int(len(x) * ratio)
-        samples = random.sample(x, num_samples)
+        # Sampling with replacement.
+        samples = random.choices(x, k=num_samples)
         return samples
 
     def _predict(self, x):
