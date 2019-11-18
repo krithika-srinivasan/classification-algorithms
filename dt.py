@@ -44,6 +44,20 @@ class TreeNode:
             print("{0}[Class {1}]".format(SPACER * (depth + 1), root.right))
         return
 
+    @staticmethod
+    def verify_tree(root):
+        l, r = False, False
+        if isinstance(root.left, TreeNode):
+            l = TreeNode.verify_tree(root.left)
+        else:
+            l = isinstance(root.left, int)
+        if isinstance(root.right, TreeNode):
+            r = TreeNode.verify_tree(root.right)
+        else:
+            r = isinstance(root.right, int)
+        return l and r
+
+
 class DecisionTree:
     """
     Binary decision tree.
@@ -149,12 +163,8 @@ class DecisionTree:
             fidx, fvalue, ls = self.select_best_split(left)
             if ls is None:
                 node.left = self.to_terminal(left)
-                return
-            ll, lr = ls
-            # If both leaves have the same terminal value, do not split.
-            if len(ll) and len(lr) and self.check_if_same_terminal(ll, lr):
-                node.left = self.to_terminal(left)
             else:
+                ll, lr = ls
                 self.features_used.add(fidx)
                 node.left = TreeNode(ll, lr, fidx, fvalue)
                 self.split(node.left, depth + 1)
@@ -165,12 +175,8 @@ class DecisionTree:
             fidx, fvalue, rs = self.select_best_split(right)
             if rs is None:
                 node.right = self.to_terminal(right)
-                return
-            rl, rr = rs
-            # If both leaves have the same terminal value, do not split.
-            if len(rl) and len(rr) and self.check_if_same_terminal(rl, rr):
-                node.right = self.to_terminal(right)
             else:
+                rl, rr = rs
                 self.features_used.add(fidx)
                 node.right = TreeNode(rl, rr, fidx, fvalue)
                 self.split(node.right, depth + 1)
@@ -206,6 +212,7 @@ class DecisionTree:
         self.features_used.add(root_idx)
         root = TreeNode(root_left, root_right, root_idx, root_val)
         self.split(root)
+        # assert TreeNode.verify_tree(root), "Leaf nodes are not integers"
         self.root = root
         return root
 
@@ -229,12 +236,14 @@ def main():
     prec = precision_score(labels, predicted_labels)
     p, r, f1 = get_metrics(labels, predicted_labels)
     acc = accuracy(labels, predicted_labels)
+    print("Naive results")
     print("Accuracy: {}, Precision: {}, Recall: {}, F-1: {}".format(acc, p, r, f1))
 
     ten_cv = CrossValidation(k=10)
     dt = DecisionTree(max_depth=max_depth, min_size=min_size)
     train_scores, val_scores, *_ = ten_cv.cross_validate(dt, x, labels)
-    print("Training scores: {0}, validation scores: {1}".format(train_scores, val_scores))
+    print("10-fold cross validation")
+    print("Training scores: {0}\nValidation scores: {1}".format(train_scores, val_scores))
     return
 
 if __name__ == "__main__":

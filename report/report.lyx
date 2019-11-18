@@ -220,6 +220,17 @@ Once we have the best feature split, we split the data set into two branches,
  splitting the dataset any further.
 \end_layout
 
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "example_decision_tree.txt"
+lstparams "breaklines=true,captionpos=b,frame=tb,caption={Example Decision Tree}"
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 Observations
 \end_layout
@@ -301,7 +312,7 @@ dataset1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.991/0.932
+0.992/0.916
 \end_layout
 
 \end_inset
@@ -310,7 +321,7 @@ dataset1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.996/0.922
+0.993/0.891
 \end_layout
 
 \end_inset
@@ -319,7 +330,7 @@ dataset1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.98/0.902
+0.985/0.886
 \end_layout
 
 \end_inset
@@ -328,7 +339,7 @@ dataset1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.988/0.911
+0.989/0.886
 \end_layout
 
 \end_inset
@@ -348,7 +359,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.824/0.663
+0.693/0.673
 \end_layout
 
 \end_inset
@@ -357,7 +368,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.815/0.523
+0.650/0.368
 \end_layout
 
 \end_inset
@@ -366,7 +377,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.651/0.445
+0.480/0.426
 \end_layout
 
 \end_inset
@@ -375,7 +386,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.718/0.464
+0.449/0.392
 \end_layout
 
 \end_inset
@@ -410,7 +421,7 @@ Decision Tree performance scores
 \end_layout
 
 \begin_layout Standard
-The max depth was set to 5 levels, and min number of samples required to
+The max depth was set to 6 levels, and min number of samples required to
  split set to 2 samples, for both data sets.
  We found that these settings give us the best balance between training
  and validation dataset performance.
@@ -433,7 +444,8 @@ Overall, the simple nature of decision trees, along with their relatively
 \begin_layout Standard
 The downside of decision trees is their brute force approach to computing
  the best feature split at each level in the tree, which makes them scale
- poorly for larger tree and dataset sizes.
+ poorly for larger tree and dataset sizes, and the fact that it can easily
+ overfit to the training data.
 \end_layout
 
 \begin_layout Subsection
@@ -536,7 +548,7 @@ dataset1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.988/0.955
+0.984/0.955
 \end_layout
 
 \end_inset
@@ -545,7 +557,7 @@ dataset1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.998/0.967
+0.997/0.970
 \end_layout
 
 \end_inset
@@ -554,7 +566,7 @@ dataset1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.97/0.91
+0.961/0.910
 \end_layout
 
 \end_inset
@@ -563,7 +575,7 @@ dataset1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.984/0.937
+0.979/0.938
 \end_layout
 
 \end_inset
@@ -583,7 +595,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.825/0.713
+0.752/0.693
 \end_layout
 
 \end_inset
@@ -592,7 +604,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.913/0.662
+0.832/0.652
 \end_layout
 
 \end_inset
@@ -601,7 +613,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.548/0.381
+0.336/0.268
 \end_layout
 
 \end_inset
@@ -610,7 +622,7 @@ dataset2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.684/0.469
+0.499/0.368
 \end_layout
 
 \end_inset
@@ -651,12 +663,20 @@ Random Forest performance scores
 \end_layout
 
 \begin_layout Standard
+For the first dataset, we see that all 4 metrics are within range of each
+ other, pointing to the fact that the particular dataset is easily divisible.
+\end_layout
+
+\begin_layout Standard
 For the second dataset, we see that the most values, except for recall,
  are better than the decision tree approach, but not by much, whereas the
  first dataset gives much better results compared to its decision tree counterpa
 rt.
  This once again points to the fact that the second dataset is more cohesive,
  making it harder to find a good decision boundary.
+ The lower recall value could be explained by the fact that we have many
+ trees, and the average recall value could be skewed by false negatives
+ classified by many trees.
 \end_layout
 
 \begin_layout Standard

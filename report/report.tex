@@ -17,6 +17,7 @@
 \makeatother
 
 \usepackage{babel}
+\usepackage{listings}
 \begin{document}
 \title{CSE 601 - Classification Algorithms Report}
 \author{Dipack P Panjabi (50291077), Krithika Srinivasan (-)}
@@ -88,6 +89,7 @@ us further splits. We repeat this process until we reach the maximum
 specified tree depth, or we simply do not have the minimum required
 number of samples to justify splitting the dataset any further.
 \end{enumerate}
+\lstinputlisting[breaklines=true,captionpos=b,frame=tb,caption={Example Decision Tree}]{example_decision_tree.txt}
 
 \subsubsection{Observations}
 
@@ -97,9 +99,9 @@ number of samples to justify splitting the dataset any further.
 Data set & Accuracy (Train/Validation) & Precision (T/V) & Recall (T/V) & F-1 score (T/V)\tabularnewline
 \hline 
 \hline 
-dataset1 & 0.991/0.932 & 0.996/0.922 & 0.98/0.902 & 0.988/0.911\tabularnewline
+dataset1 & 0.992/0.916 & 0.993/0.891 & 0.985/0.886 & 0.989/0.886\tabularnewline
 \hline 
-dataset2 & 0.824/0.663 & 0.815/0.523 & 0.651/0.445 & 0.718/0.464\tabularnewline
+dataset2 & 0.693/0.673 & 0.650/0.368 & 0.480/0.426 & 0.449/0.392\tabularnewline
 \hline 
 \end{tabular}
 
@@ -107,7 +109,7 @@ dataset2 & 0.824/0.663 & 0.815/0.523 & 0.651/0.445 & 0.718/0.464\tabularnewline
 
 \end{table}
 
-The max depth was set to 5 levels, and min number of samples required
+The max depth was set to 6 levels, and min number of samples required
 to split set to 2 samples, for both data sets. We found that these
 settings give us the best balance between training and validation
 dataset performance.
@@ -125,7 +127,8 @@ split.
 
 The downside of decision trees is their brute force approach to computing
 the best feature split at each level in the tree, which makes them
-scale poorly for larger tree and dataset sizes.
+scale poorly for larger tree and dataset sizes, and the fact that
+it can easily overfit to the training data.
 
 \subsection{Random Forest}
 
@@ -148,9 +151,9 @@ using a simple majority vote.
 Data set & Accuracy (Train/Validation) & Precision (T/V) & Recall (T/V) & F-1 score (T/V)\tabularnewline
 \hline 
 \hline 
-dataset1 & 0.988/0.955 & 0.998/0.967 & 0.97/0.91 & 0.984/0.937\tabularnewline
+dataset1 & 0.984/0.955 & 0.997/0.970 & 0.961/0.910 & 0.979/0.938\tabularnewline
 \hline 
-dataset2 & 0.825/0.713 & 0.913/0.662 & 0.548/0.381 & 0.684/0.469\tabularnewline
+dataset2 & 0.752/0.693 & 0.832/0.652 & 0.336/0.268 & 0.499/0.368\tabularnewline
 \hline 
 \end{tabular}
 
@@ -164,12 +167,18 @@ both the feature and sample sampling ratios set to 40\% for dataset
 identical to dataset 1. We found that these settings give us the best
 balance between training and validation dataset performance.
 
+For the first dataset, we see that all 4 metrics are within range
+of each other, pointing to the fact that the particular dataset is
+easily divisible.
+
 For the second dataset, we see that the most values, except for recall,
 are better than the decision tree approach, but not by much, whereas
 the first dataset gives much better results compared to its decision
 tree counterpart. This once again points to the fact that the second
 dataset is more cohesive, making it harder to find a good decision
-boundary.
+boundary. The lower recall value could be explained by the fact that
+we have many trees, and the average recall value could be skewed by
+false negatives classified by many trees.
 
 Where the random forest approach truly shines is in consistency when
 testing against datasets other than the one it was trained on. This

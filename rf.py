@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from argparse import ArgumentParser
-from dt import DecisionTree
+from dt import DecisionTree, TreeNode
 from cv import CrossValidation
 from util import import_file, accuracy, get_metrics
 
@@ -76,12 +76,14 @@ def main():
     predictions = rf.predict(x)
     p, r, f1 = get_metrics(labels, predictions)
     acc = accuracy(labels, predictions)
+    print("Naive results")
     print("Accuracy: {}, Precision: {}, Recall: {}, F-1: {}".format(acc, p, r, f1))
 
     ten_cv = CrossValidation(k=10)
     rf = RandomForest(num_trees=num_trees, sampling_ratio=sampling_ratio, max_depth=max_depth, min_size=min_size, features_ratio=features_ratio)
     train_scores, val_scores, *_ = ten_cv.cross_validate(rf, x, labels)
-    print("Training scores: {0}, validation scores: {1}".format(train_scores, val_scores))
+    print("10-fold cross validation")
+    print("Training scores: {0}\nValidation scores: {1}".format(train_scores, val_scores))
     return
 
 if __name__=="__main__":
