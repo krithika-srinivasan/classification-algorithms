@@ -58,6 +58,8 @@ class DecisionTree:
         self.min_size = min_size
         self.features_ratio = features_ratio
         self.root = None
+        self._num_features = 0
+        self.features_used = set()
         return
 
     def gini_index(self, groups, classes):
@@ -101,7 +103,7 @@ class DecisionTree:
         """
         # Assuming the last value in a row is its class label
         uniq_classes = list(set([row[-1] for row in x]))
-        num_features = len(x[0]) - 1
+        num_features = self._num_features
         num_features_selected = int(num_features * self.features_ratio)
         selected_features_indexes = random.sample(range(num_features), num_features_selected)
         b_index, b_value, b_score, b_groups = INT_MAX, INT_MAX, INT_MAX, None
@@ -131,20 +133,22 @@ class DecisionTree:
         if not left or not right:
             node.left = node.right = self.to_terminal(left + right)
             return
-        if depth >= self.max_depth:
+        if depth >= self.max_depth or len(self.features_used) == self._num_features:
             node.left, node.right = self.to_terminal(left), self.to_terminal(right)
             return
         if len(left) <= self.min_size:
             node.left = self.to_terminal(left)
         else:
-            li, lv, (ll, lr) = self.select_best_split(left)
-            node.left = TreeNode(ll, lr, li, lv)
+            fidx, fvalue, (ll, lr) = self.select_best_split(left)
+            self.features_used.add(fidx)
+            node.left = TreeNode(ll, lr, fidx, fvalue)
             self.split(node.left, depth + 1)
         if len(right) <= self.min_size:
             node.right = self.to_terminal(right)
         else:
-            ri, rv, (rl, rr) = self.select_best_split(right)
-            node.right = TreeNode(rl, rr, ri, rv)
+            fidx, fvalue, (rl, rr) = self.select_best_split(right)
+            self.features_used.add(fidx)
+            node.right = TreeNode(rl, rr, fidx, fvalue)
             self.split(node.right, depth + 1)
         return
 
@@ -172,7 +176,9 @@ class DecisionTree:
         return None
 
     def fit(self, x):
+        self._num_features = len(x[0]) - 1
         root_idx, root_val, (root_left, root_right) = self.select_best_split(x)
+        self.features_used.add(root_idx)
         root = TreeNode(root_left, root_right, root_idx, root_val)
         self.split(root)
         self.root = root

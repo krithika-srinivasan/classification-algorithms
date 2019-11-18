@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.metrics import precision_score, recall_score
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 def import_file(path):
     result = []
@@ -66,12 +66,6 @@ def confusion_matrix(ltrue, lpred):
 #     false_neg = np.sum(cm, axis=1) - true_pos
 #     recall = np.sum(true_pos / (true_pos + false_neg))
 #     return recall
-
-def f1_score(ltrue, lpred):
-    assert len(ltrue) == len(lpred), "Unequal number of labels in truth and predictions"
-    precision = precision_score(ltrue, lpred)
-    recall = recall_score(ltrue, lpred)
-    return 2 * (precision * recall) / (precision + recall)
 
 def get_metrics(ltrue, lpred):
     """
