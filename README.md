@@ -22,5 +22,4 @@ python3 rf.py --file ./data/project3_dataset2.txt --num-trees 50 --sampling-rati
 To find all options you can run with, simply use the `--help` flag with either script.
 
 ## TODO:
-1. Enforce unique feature splits on decision trees
-2. Fill this README with info on how to run stuff:
+1. Fill this README with info on how to run stuff:

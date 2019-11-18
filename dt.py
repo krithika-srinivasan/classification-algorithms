@@ -108,6 +108,8 @@ class DecisionTree:
         selected_features_indexes = random.sample(range(num_features), num_features_selected)
         b_index, b_value, b_score, b_groups = INT_MAX, INT_MAX, INT_MAX, None
         for idx in selected_features_indexes:
+            if idx in self.features_used:
+                continue
             for row in x:
                 groups = self._split(x, idx, row[idx])
                 gini = self.gini_index(groups, uniq_classes)
@@ -125,6 +127,9 @@ class DecisionTree:
         klasses = [row[-1] for row in group]
         return max(set(klasses), key=klasses.count)
 
+    def check_if_same_terminal(self, left, right):
+        return self.to_terminal(left) == self.to_terminal(right)
+
     def split(self, node, depth=1):
         """
         Recursively split the node, until we reach no-split condition.
@@ -133,23 +138,40 @@ class DecisionTree:
         if not left or not right:
             node.left = node.right = self.to_terminal(left + right)
             return
+
         if depth >= self.max_depth or len(self.features_used) == self._num_features:
             node.left, node.right = self.to_terminal(left), self.to_terminal(right)
             return
+
         if len(left) <= self.min_size:
             node.left = self.to_terminal(left)
         else:
-            fidx, fvalue, (ll, lr) = self.select_best_split(left)
-            self.features_used.add(fidx)
-            node.left = TreeNode(ll, lr, fidx, fvalue)
-            self.split(node.left, depth + 1)
+            fidx, fvalue, ls = self.select_best_split(left)
+            if ls is None:
+                node.left = self.to_terminal(left)
+                return
+            ll, lr = ls
+            if len(ll) and len(lr) and self.check_if_same_terminal(ll, lr):
+                node.left = self.to_terminal(left)
+            else:
+                self.features_used.add(fidx)
+                node.left = TreeNode(ll, lr, fidx, fvalue)
+                self.split(node.left, depth + 1)
+
         if len(right) <= self.min_size:
             node.right = self.to_terminal(right)
         else:
-            fidx, fvalue, (rl, rr) = self.select_best_split(right)
-            self.features_used.add(fidx)
-            node.right = TreeNode(rl, rr, fidx, fvalue)
-            self.split(node.right, depth + 1)
+            fidx, fvalue, rs = self.select_best_split(right)
+            if rs is None:
+                node.right = self.to_terminal(right)
+                return
+            rl, rr = rs
+            if len(rl) and len(rr) and self.check_if_same_terminal(rl, rr):
+                node.right = self.to_terminal(right)
+            else:
+                self.features_used.add(fidx)
+                node.right = TreeNode(rl, rr, fidx, fvalue)
+                self.split(node.right, depth + 1)
         return
 
     def _predict(self, node, target):
@@ -176,6 +198,7 @@ class DecisionTree:
         return None
 
     def fit(self, x):
+        self.features_used = set()
         self._num_features = len(x[0]) - 1
         root_idx, root_val, (root_left, root_right) = self.select_best_split(x)
         self.features_used.add(root_idx)
