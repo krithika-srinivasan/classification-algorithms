@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler
 
 BASE_LOC = "./data"
 TRAIN = "{0}/train_features.csv".format(BASE_LOC)
@@ -47,6 +48,9 @@ def main():
     # learner = RandomForestClassifier(n_estimators=100, criterion="gini", max_depth=6, min_samples_split=5, bootstrap=True)
 
     # Gave 0.83934
+    # With RobustScaler - 0.83828
+    # With MinMaxScaler - 0.81528
+    # With StandardScaler - 0.83278
     learner = RandomForestClassifier(n_estimators=100, criterion="gini", max_depth=6, min_samples_split=8, bootstrap=True)
 
     x, y = get_train_data()
