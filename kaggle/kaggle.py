@@ -53,12 +53,16 @@ def main():
     # With RobustScaler - 0.83828
     # With MinMaxScaler - 0.81528
     # With StandardScaler - 0.83278
-    learner = RandomForestClassifier(n_estimators=100, criterion="entropy", max_depth=8, min_samples_split=10, bootstrap=True)
+    learner = RandomForestClassifier(n_estimators=100, criterion="gini", max_depth=8, min_samples_split=10, bootstrap=True)
 
 
     # With 20 features and RF - 0.82154
     # With 50 features and RF - 0.84745
-    pca = PCA(n_components=50)
+    # With 50 features and RF, 100 trees, entropy, max depth 8, min samples split 10 - 0.84459
+    # With 70 features and RF, 100 trees, gini, max depth 8, min samples split 10 - 0.84848
+    # With 70 features and RF, 100 trees, gini, max depth 5, min samples split 10 - 0.84768
+    # With 70 features and RF, 100 trees, gini, max depth 8, min samples split 5 - 0.084175
+    pca = PCA(n_components=70)
 
     # Get data
     x, y = get_train_data()
@@ -78,7 +82,6 @@ def main():
     out = create_output(x_test.index, predictions)
 
     print(predictions)
-    print(out)
 
     outfn = get_outfile_name()
     print("Writing to {}".format(outfn))
