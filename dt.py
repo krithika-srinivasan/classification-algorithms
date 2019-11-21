@@ -1,6 +1,5 @@
 import sys
 import random
-from sklearn.metrics import precision_score
 from argparse import ArgumentParser
 from cv import CrossValidation
 from util import import_file, accuracy, get_metrics
@@ -233,8 +232,7 @@ def main():
     tree = dt.fit(x)
     TreeNode.show_tree(tree)
     predicted_labels = dt.predict(x)
-    prec = precision_score(labels, predicted_labels)
-    p, r, f1 = get_metrics(labels, predicted_labels)
+    p, r, f1 = get_metrics(labels, predicted_labels, class_label=1)
     acc = accuracy(labels, predicted_labels)
     print("Naive results")
     print("Accuracy: {}, Precision: {}, Recall: {}, F-1: {}".format(acc, p, r, f1))

@@ -44,12 +44,16 @@ class CrossValidation:
             training_predicted = learner.predict(training)
             val_predicted = learner.predict(val)
 
-            acc, (p, r, f1) = accuracy(training_labels, training_predicted), get_metrics(training_labels, training_predicted)
+            # print("Training: {}\nVal: {}\nTLabels: {}\nVlabels: {}".format(training, val, training_labels, val_labels))
+            # print("Training predicted", len(training_predicted), training_predicted)
+            # print("Validation predicted", len(val_predicted), val_predicted)
+
+            acc, (p, r, f1) = accuracy(training_labels, training_predicted), get_metrics(training_labels, training_predicted, class_label=1)
             scores = {"accuracy": acc, "precision": p, "recall": r, "f-1": f1}
             train_scores.append(scores)
             self._update_scores(scores, train_agg)
 
-            acc, (p, r, f1) = accuracy(val_labels, val_predicted), get_metrics(val_labels, val_predicted)
+            acc, (p, r, f1) = accuracy(val_labels, val_predicted), get_metrics(val_labels, val_predicted, class_label=1)
             scores = {"accuracy": acc, "precision": p, "recall": r, "f-1": f1}
             val_scores.append(scores)
             self._update_scores(scores, val_agg)

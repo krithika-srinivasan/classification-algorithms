@@ -75,7 +75,7 @@ def main():
     rf = RandomForest(num_trees=num_trees, sampling_ratio=sampling_ratio, max_depth=max_depth, min_size=min_size, features_ratio=features_ratio)
     rf.fit(x)
     predictions = rf.predict(x)
-    p, r, f1 = get_metrics(labels, predictions)
+    p, r, f1 = get_metrics(labels, predictions, class_label=1)
     acc = accuracy(labels, predictions)
     print("Naive results")
     print("Accuracy: {}, Precision: {}, Recall: {}, F-1: {}".format(acc, p, r, f1))

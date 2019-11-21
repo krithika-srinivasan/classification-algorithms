@@ -43,6 +43,7 @@ def main():
     # learner = RandomForestClassifier(n_estimators=50, criterion="gini", max_depth=5, min_samples_split=2, bootstrap=True)
 
     # Gave 0.80757 - bad settings?
+    # SVM is pretty bad - AVOID
     # learner = SVC(C=1.0, kernel="rbf")
 
     # Gave 0.83934
@@ -52,7 +53,7 @@ def main():
     # With RobustScaler - 0.83828
     # With MinMaxScaler - 0.81528
     # With StandardScaler - 0.83278
-    learner = RandomForestClassifier(n_estimators=100, criterion="gini", max_depth=8, min_samples_split=10, bootstrap=True)
+    learner = RandomForestClassifier(n_estimators=100, criterion="entropy", max_depth=8, min_samples_split=10, bootstrap=True)
 
 
     # With 20 features and RF - 0.82154

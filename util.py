@@ -1,5 +1,4 @@
 import numpy as np
-from sklearn.metrics import precision_score, recall_score, f1_score
 
 def import_file(path):
     result = []
@@ -47,30 +46,37 @@ def confusion_matrix(ltrue, lpred):
         cm[ltrue[idx], lpred[idx]] += 1
     return cm
 
-# def precision_score(ltrue, lpred, cm=None):
-#     assert len(ltrue) == len(lpred), "Unequal number of labels in truth and predictions"
-#     if cm is None:
-#         cm = confusion_matrix(ltrue, lpred)
-#     true_pos = np.diag(cm)
-#     false_pos = np.sum(cm, axis=0) - true_pos
-#     false_neg = np.sum(cm, axis=1) - true_pos
-#     prec = np.sum(true_pos / (true_pos + false_pos))
-#     return prec
-#
-# def recall_score(ltrue, lpred, cm=None):
-#     assert len(ltrue) == len(lpred), "Unequal number of labels in truth and predictions"
-#     if cm is None:
-#         cm = confusion_matrix(ltrue, lpred)
-#     true_pos = np.diag(cm)
-#     false_pos = np.sum(cm, axis=0) - true_pos
-#     false_neg = np.sum(cm, axis=1) - true_pos
-#     recall = np.sum(true_pos / (true_pos + false_neg))
-#     return recall
+def precision_score(ltrue, lpred, cm=None):
+    assert len(ltrue) == len(lpred), "Unequal number of labels in truth and predictions"
+    if cm is None:
+        cm = confusion_matrix(ltrue, lpred)
+    true_pos = np.diag(cm)
+    false_pos = np.sum(cm, axis=0) - true_pos
+    false_neg = np.sum(cm, axis=1) - true_pos
+    prec = np.nan_to_num(true_pos / (true_pos + false_pos))
+    return prec
 
-def get_metrics(ltrue, lpred):
+def recall_score(ltrue, lpred, cm=None):
+    assert len(ltrue) == len(lpred), "Unequal number of labels in truth and predictions"
+    if cm is None:
+        cm = confusion_matrix(ltrue, lpred)
+    true_pos = np.diag(cm)
+    false_pos = np.sum(cm, axis=0) - true_pos
+    false_neg = np.sum(cm, axis=1) - true_pos
+    recall = np.nan_to_num(true_pos / (true_pos + false_neg))
+    return recall
+
+def get_metrics(ltrue, lpred, class_label=None):
     """
-    Return precision, recall, and F-1 score
+    Return precision, recall, and F-1 score.
+    class_label = Return the metrics for the given label.
     """
     assert len(ltrue) == len(lpred), "Unequal number of labels in truth and predictions"
-    return precision_score(ltrue, lpred), recall_score(ltrue, lpred), f1_score(ltrue, lpred)
+    cm = confusion_matrix(ltrue, lpred)
+    precision = precision_score(ltrue, lpred, cm)
+    recall = recall_score(ltrue, lpred, cm)
+    f1 = np.nan_to_num(2 * (precision * recall) / (precision + recall))
+    if class_label is not None:
+        return precision[class_label], recall[class_label], f1[class_label]
+    return precision, recall, f1
 
