@@ -1,8 +1,7 @@
 library(matrixStats)
-library(MLmetrics)
 library(tidyverse)
 #Input the data
-data_raw <- read.csv('data/Project3_dataset1.txt', sep = '\t', header = FALSE)
+data_raw <- read.csv('Project_3/Project3_dataset2.txt', sep = '\t', header = FALSE)
 
 data_prep <- data_raw
 
@@ -12,6 +11,45 @@ for(i in 1:ncol(data_raw)){
     data_prep[,i] <- cut((data_raw[,i]), breaks = 3, labels = c("Low", "Medium", "High"))
   }
 }
+
+Accuracy <- function(y_pred, y_true) {
+  Accuracy <- mean(y_true == y_pred)
+  return(Accuracy)
+}
+
+Precision <- function(y_true, y_pred, positive = NULL) {
+  Confusion_DF <- transform(as.data.frame(ConfusionMatrix(y_pred, y_true)),
+                            y_true = as.character(y_true),
+                            y_pred = as.character(y_pred),
+                            Freq = as.integer(Freq))
+  if (is.null(positive) == TRUE) positive <- as.character(Confusion_DF[1,1])
+  TP <- as.integer(subset(Confusion_DF, y_true==positive & y_pred==positive)["Freq"])
+  FP <- as.integer(sum(subset(Confusion_DF, y_true!=positive & y_pred==positive)["Freq"]))
+  Precision <- TP/(TP+FP)
+  return(Precision)
+}
+
+Recall <- function(y_true, y_pred, positive = NULL) {
+  Confusion_DF <- transform(as.data.frame(ConfusionMatrix(y_pred, y_true)),
+                            y_true = as.character(y_true),
+                            y_pred = as.character(y_pred),
+                            Freq = as.integer(Freq))
+  if (is.null(positive) == TRUE) positive <- as.character(Confusion_DF[1,1])
+  TP <- as.integer(subset(Confusion_DF, y_true==positive & y_pred==positive)["Freq"])
+  FN <- as.integer(sum(subset(Confusion_DF, y_true==positive & y_pred!=positive)["Freq"]))
+  Recall <- TP/(TP+FN)
+  return(Recall)
+}
+
+F1_Score <- function(y_true, y_pred, positive = NULL) {
+  Confusion_DF <- ConfusionDF(y_pred, y_true)
+  if (is.null(positive) == TRUE) positive <- as.character(Confusion_DF[1,1])
+  Precision <- Precision(y_true, y_pred, positive)
+  Recall <- Recall(y_true, y_pred, positive)
+  F1_Score <- 2 * (Precision * Recall) / (Precision + Recall)
+  return(F1_Score)
+}
+
 
 #Keep the last column as it was, can't use ncol-1 in the for loop above for some reason
 data_prep[ncol(data_prep)] <- data_raw[ncol(data_prep)]
