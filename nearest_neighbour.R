@@ -1,11 +1,10 @@
 library(magrittr)
 library(tidyverse)
 library(reshape2)
-library(MLmetrics)
 
 #Read the dataset
-path = 'data/Project3_dataset2.txt'
-k = 3
+path = 'Project_3/Project3_dataset2.txt'
+k = 10
 
 data_raw<- read_delim(path, delim = '\t', col_names = FALSE)
 
@@ -18,6 +17,44 @@ if(is.character(data_raw$X5) == TRUE){
   data_raw$X5 <- data_raw$ind$seq.1.0.
   data_raw <- data_raw%>%
     select(-ind)
+}
+
+Accuracy <- function(y_pred, y_true) {
+  Accuracy <- mean(y_true == y_pred)
+  return(Accuracy)
+}
+
+Precision <- function(y_true, y_pred, positive = NULL) {
+  Confusion_DF <- transform(as.data.frame(ConfusionMatrix(y_pred, y_true)),
+                            y_true = as.character(y_true),
+                            y_pred = as.character(y_pred),
+                            Freq = as.integer(Freq))
+  if (is.null(positive) == TRUE) positive <- as.character(Confusion_DF[1,1])
+  TP <- as.integer(subset(Confusion_DF, y_true==positive & y_pred==positive)["Freq"])
+  FP <- as.integer(sum(subset(Confusion_DF, y_true!=positive & y_pred==positive)["Freq"]))
+  Precision <- TP/(TP+FP)
+  return(Precision)
+}
+
+Recall <- function(y_true, y_pred, positive = NULL) {
+  Confusion_DF <- transform(as.data.frame(ConfusionMatrix(y_pred, y_true)),
+                            y_true = as.character(y_true),
+                            y_pred = as.character(y_pred),
+                            Freq = as.integer(Freq))
+  if (is.null(positive) == TRUE) positive <- as.character(Confusion_DF[1,1])
+  TP <- as.integer(subset(Confusion_DF, y_true==positive & y_pred==positive)["Freq"])
+  FN <- as.integer(sum(subset(Confusion_DF, y_true==positive & y_pred!=positive)["Freq"]))
+  Recall <- TP/(TP+FN)
+  return(Recall)
+}
+
+F1_Score <- function(y_true, y_pred, positive = NULL) {
+  Confusion_DF <- ConfusionDF(y_pred, y_true)
+  if (is.null(positive) == TRUE) positive <- as.character(Confusion_DF[1,1])
+  Precision <- Precision(y_true, y_pred, positive)
+  Recall <- Recall(y_true, y_pred, positive)
+  F1_Score <- 2 * (Precision * Recall) / (Precision + Recall)
+  return(F1_Score)
 }
 
 #Get just the row number and the class
@@ -54,7 +91,7 @@ knn <- function(data_train, data_test,k){
   
   #Join the training set with the distance table
   #Gives the distance of each row in the training set with every other row
-  data_expand <- data_train%>%
+  data_expand <- data_test%>%
     inner_join(data_dist)
   
   #Group by id to get the top n nearest neighbours for that point
