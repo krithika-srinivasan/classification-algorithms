@@ -6,6 +6,8 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 
 BASE_LOC = "./data"
 TRAIN = "{0}/train_features.csv".format(BASE_LOC)
@@ -55,6 +57,12 @@ def main():
     # With StandardScaler - 0.83278
     learner = RandomForestClassifier(n_estimators=100, criterion="gini", max_depth=8, min_samples_split=10, bootstrap=True)
 
+    # L2 penalty, Dual=True - 0.81102
+    # L2 penalty, Dual=False - 0.79844
+    # learner = LogisticRegression(penalty="l2", dual=False, max_iter=1000)
+
+    # learner = KNeighborsClassifier(n_neighbors=10, weights="uniform")
+
 
     # With 20 features and RF - 0.82154
     # With 50 features and RF - 0.84745
@@ -62,6 +70,9 @@ def main():
     # With 70 features and RF, 100 trees, gini, max depth 8, min samples split 10 - 0.84848
     # With 70 features and RF, 100 trees, gini, max depth 5, min samples split 10 - 0.84768
     # With 70 features and RF, 100 trees, gini, max depth 8, min samples split 5 - 0.084175
+    # KNN 10 neighbors, weights=distance - 0.82638
+    # KNN 10 neighbors, weights=uniform - 0.82758
+    # KNN 5 neighbors, weights=distance - 0.80565
     pca = PCA(n_components=70)
 
     # Get data
