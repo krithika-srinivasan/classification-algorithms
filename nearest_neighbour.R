@@ -96,13 +96,13 @@ knn <- function(data_train, data_test,k){
   
   #Group by id to get the top n nearest neighbours for that point
   data_nn <- data_expand %>%
-    group_by(training_row) %>%
+    inner_join(data_test)%>%
+    group_by(testing_row) %>%
     top_n(-k, distance)  %>%
-    arrange(training_row)
+    arrange(testing_row)
   
   #Weigh the data based on distances
   data_weights <- data_nn%>%
-    inner_join(data_test)%>%
     mutate(dist_w = 1/distance^2)
   
   #Classify the data by taking a majority vote
