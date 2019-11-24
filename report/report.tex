@@ -42,15 +42,15 @@ The algorithm works as follows,
 \begin{enumerate}
 \item Partition the data set into training and validation subsets. We do
 this by using the concept of a sliding window to partition the total
-dataset into each type. In this case, as we use 10 fold cross validation,
+dataset into each fold. In this case, as we use 10 fold cross validation,
 the validation dataset is 10\% of the total dataset, with the rest
 used for training.
 \begin{enumerate}
-\item If we for example we have a total of 500 samples in the dataset, the
+\item If, for example, we have a total of 500 samples in the dataset, the
 first 50 samples are the validation set for the first fold, with the
 remaining used for training. The second fold uses samples indexed
 from 50 to 100 as the validation set, with samples indexed 0-49, and
-101-500 as the training, following the sliding window principle.
+101-500 as the training set, following the sliding window principle.
 \item We use this technique to divide the data into 10 sets, with each set
 containing a validation and training dataset.
 \end{enumerate}
@@ -70,13 +70,16 @@ The decision tree algorithm works as follows,
 \item Based on the data we have currently, we select the best feature to
 split the data into two parts. The best feature is selected by splitting
 the data along each feature, for each feature value, and selecting
-the feature, and feature value, that gives us the highest Gini index.
+the feature, and feature value, that gives us the lowest Gini index.
 We also do not use each feature value more than once.
 \begin{enumerate}
 \item A high Gini index means that the data is better distributed between
 both branches of the binary decision tree node. This is important
 in building a balanced decision tree with enough samples on either
-branch.
+branch. For example, if the Gini index is 0, that means all elements
+belong to the same class, whereas a value of 1, means that elements
+are randomly distributed across classes. We prefer the split that
+has a lower Gini index.
 \item Gini index for a tree node can be calculated as follows
 \[
 GINI(x)=1-\sum_{j}[\ p(j|x)\ ]^{2}
@@ -91,6 +94,19 @@ specified tree depth, or we simply do not have the minimum required
 number of samples to justify splitting the dataset any further.
 \end{enumerate}
 \lstinputlisting[breaklines=true,captionpos=b,frame=tb,caption={Example Decision Tree}]{example_decision_tree.txt}
+
+\subsubsection{Feature Handling}
+
+This decision tree handles continuous features such as floats in the
+manner it receives them, i.e., it decides a split based on the actual
+values provided to it.
+
+Binary Categorical features, like the strings given in the two datasets,
+are treated as binary variables, with each sample having either one
+value or the other, allowing for binary splits.
+
+The best feature chosen corresponds to the one with the lowest Gini
+index at a given split point.
 
 \subsubsection{Observations}
 
@@ -148,6 +164,11 @@ Since this algorithm utilises multiple decision trees, we get a predicted
 class label from each tree, with the final predicted class label chosen
 using a simple majority vote.
 
+\subsubsection{Feature Handling}
+
+Since Random Forests simply contain multiple Decision Trees, the features
+are handled in exactly the same way as Decision trees.
+
 \subsubsection{Observations}
 
 \begin{table}[H]
@@ -168,13 +189,13 @@ dataset2 & 0.752/0.702 & 0.825/0.747 & 0.399/0.279 & 0.520/0.372\tabularnewline
 50 trees were planted in the random forest, with the max depth set
 to 5 levels, min number of samples required to split set to 2 samples,
 both the feature and sample sampling ratios set to 40\% for dataset
-1. We plant a 100 trees, for dataset 2, with all the other settings
+1. We plant 100 trees, for dataset 2, with all the other settings
 identical to dataset 1. We found that these settings give us the best
 balance between training and validation dataset performance.
 
 For the first dataset, we see that all 4 metrics are within range
-of each other, pointing to the fact that the particular dataset is
-easily divisible.
+of each other, compared to the decision tree approach, pointing to
+the fact that the particular dataset is easily divisible.
 
 For the second dataset, we see that the most values, except for recall,
 are better than the decision tree approach, but not by much, whereas
