@@ -3,7 +3,7 @@ library(tidyverse)
 library(reshape2)
 
 #Read the dataset
-path = 'Project_3/Project3_dataset2.txt'
+path = 'Project_3/Project3_dataset1.txt'
 k = 10
 
 data_raw<- read_delim(path, delim = '\t', col_names = FALSE)
@@ -73,12 +73,12 @@ f1 = 0
 knn <- function(data_train, data_test,k){
   data_train <- data_train%>%
     rename(proposed_label = label)%>%
-    rename(testing_row = id)
+    rename(training_row = id)
   
   
   data_test <- data_test%>%
     rename(true_class = label)%>%
-    rename(training_row = id)
+    rename(testing_row = id)
   
   
   #Get the distances of each row with each other row
@@ -91,7 +91,7 @@ knn <- function(data_train, data_test,k){
   
   #Join the training set with the distance table
   #Gives the distance of each row in the training set with every other row
-  data_expand <- data_test%>%
+  data_expand <- data_train%>%
     inner_join(data_dist)
   
   #Group by id to get the top n nearest neighbours for that point
@@ -102,18 +102,18 @@ knn <- function(data_train, data_test,k){
   
   #Weigh the data based on distances
   data_weights <- data_nn%>%
-    inner_join(data_train)%>%
+    inner_join(data_test)%>%
     mutate(dist_w = 1/distance^2)
   
   #Classify the data by taking a majority vote
   data_classify <- data_weights  %>%
-    group_by(training_row, proposed_label) %>%
+    group_by(testing_row, proposed_label) %>%
     summarize(votes = sum(dist_w)) %>% 
     top_n(1, votes)
   
   data_result <- data_classify%>%
     inner_join(data_test)%>%
-    select(training_row, proposed_label, true_class)
+    select(testing_row, proposed_label, true_class)
   
   #Evaluation
   acc <- Accuracy(data_result$proposed_label, data_result$true_class)
