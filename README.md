@@ -21,5 +21,23 @@ python3 rf.py --file ./data/project3_dataset2.txt --num-trees 50 --sampling-rati
 
 To find all options you can run with, simply use the `--help` flag with either script.
 
-## TODO:
-1. Fill this README with info on how to run stuff:
+### Naive Bayesian, and Nearest Neighbours
+
+Both these algorithms are written in R, and require the following packages:
+
+1. tidyVerse
+2. matrixStats
+3. magrittr
+4. reshape2
+
+You can run each of the algorithms using the following command:
+
+```bash
+Rscript naive_bayesian.R
+```
+OR
+```bash
+Rscript nearest_neighbour.R
+```
+
+To configure parameters, you will have to edit the files themselves.
