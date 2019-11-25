@@ -56,8 +56,8 @@ containing a validation and training dataset.
 \end{enumerate}
 \item Once we have the training and validation datasets, we train the learner
 (e.g. Decision Tree) on the training dataset, and evaluate its performance
-by asking it to predict the class labels for both training and validation
-datasets.
+by asking it to predict the class labels for the validation
+dataset.
 \item Once we have all predictions, we calculate the accuracy, precision,
 recall, and F-1 scores for both datasets.
 \item Repeat steps 1-3 for each fold.
@@ -113,12 +113,12 @@ index at a given split point.
 \begin{table}[H]
 \begin{tabular}{|c|c|c|c|c|}
 \hline 
-Data set & Accuracy (Train/Validation) & Precision (T/V) & Recall (T/V) & F-1 score (T/V)\tabularnewline
+Data set & Accuracy & Precision & Recall & F-1 score\tabularnewline
 \hline 
 \hline 
-dataset1 & 0.992/0.930 & 0.993/0.903 & 0.985/0.915 & 0.989/0.908\tabularnewline
+dataset1 & 0.930 & 0.903 & 0.915 & 0.908\tabularnewline
 \hline 
-dataset2 & 0.693/0.673 & 0.650/0.368 & 0.480/0.426 & 0.449/0.392\tabularnewline
+dataset2 & 0.673 & 0.368 & 0.426 & 0.392\tabularnewline
 \hline 
 \end{tabular}
 
@@ -174,12 +174,12 @@ are handled in exactly the same way as Decision trees.
 \begin{table}[H]
 \begin{tabular}{|c|c|c|c|c|}
 \hline 
-Data set & Accuracy (Train/Validation) & Precision (T/V) & Recall (T/V) & F-1 score (T/V)\tabularnewline
+Data set & Accuracy & Precision & Recall & F-1 score\tabularnewline
 \hline 
 \hline 
-dataset1 & 0.984/0.955 & 0.997/0.970 & 0.961/0.910 & 0.979/0.938\tabularnewline
+dataset1 & 0.955 & 0.970 & 0.910 & 0.938\tabularnewline
 \hline 
-dataset2 & 0.752/0.702 & 0.825/0.747 & 0.399/0.279 & 0.520/0.372\tabularnewline
+dataset2 & 0.702 & 0.747 & 0.279 & 0.372\tabularnewline
 \hline 
 \end{tabular}
 
@@ -257,7 +257,7 @@ dataset2 & 0.638 &  0.819 & 0.685 &  0.744\tabularnewline
 \end{table}
 
 The above table shows us the performance metric for the nearest-neighbours algorithm
-with k=10. We observe fairly high metrics for the first dataset and reduced ones for 
+with $k=10$. We observe fairly high metrics for the first dataset and reduced ones for 
 the second dataset. The high performance of nearest neighbours on the first dataset
 suggests a uniformity in how the classes spread out among the data points and a 
 minimal presence of outliers. In the case of the second dataset, the lower performance
@@ -323,11 +323,12 @@ information to work with.
 The advantages of Naive Bayes classifiers is that they are simple to work with and are on solid
 mathematical footing, i.e. they are well-grounded in theory. They show good performance 
 on most datasets, including ones with many features and are not computationally expensive.
+
 However, the biggest drawback of this classifier is the independence hypothesis i.e.
 assuming that the features have no relation to each other. If this is not the case and the
 features are correlated, then the classifier may not yield the best results. Additionally,
 when converting the continuous data into a discrete form, the method of conversion would also
-affect the results. Although, we have received fairly good results for both datasets, if we 
+affect the results. Though we have received fairly good results for both datasets, if we 
 were to change our method of conversion, the results would presumably change.
 
 \section{Competiton}
@@ -355,5 +356,13 @@ Random Forests, Nearest Neighbours and Naive Bayes Classifiers and evaluated the
 with accuracy, precision, recall and F1 score using 10-fold cross-validation on two different
 datasets. Interpreting the results of each algorithm illustrated the strengths and weaknesses
 of each algorithm. We were able to use this knowledge along with the technique of bagging to 
-obtain some improvements on our scores in the Kaggle competition for this project
+obtain some improvements on our scores in the Kaggle competition for this project.
+
+We also see that while every algorithm had similar scores for the first dataset, the same does not hold true
+for the second dataset. This could be explained by the fact that the first dataset has a lot of features, and
+in general seems to be easier to split compared to the second, while the second dataset has comparatively fewer features,
+and seems to be more cohesive. The second dataset performs especially poorly with the decision tree and
+random forest approaches, corroborating our assumption that it might be very cohesive, and difficult to split.
+This could be why the kNN and Naive Bayesian approaches have higher scores than the decision tree and random forest
+approaches, as they do not rely on learning a decision boundary for classification.
 \end{document}
