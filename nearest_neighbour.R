@@ -23,6 +23,10 @@ Accuracy <- function(y_pred, y_true) {
   Accuracy <- mean(y_true == y_pred)
   return(Accuracy)
 }
+ConfusionMatrix <- function(y_pred, y_true) {
+  Confusion_Mat <- table(y_true, y_pred)
+  return(Confusion_Mat)
+}
 
 Precision <- function(y_true, y_pred, positive = NULL) {
   Confusion_DF <- transform(as.data.frame(ConfusionMatrix(y_pred, y_true)),
@@ -49,7 +53,10 @@ Recall <- function(y_true, y_pred, positive = NULL) {
 }
 
 F1_Score <- function(y_true, y_pred, positive = NULL) {
-  Confusion_DF <- ConfusionDF(y_pred, y_true)
+  Confusion_DF <- transform(as.data.frame(ConfusionMatrix(y_pred, y_true)),
+                            y_true = as.character(y_true),
+                            y_pred = as.character(y_pred),
+                            Freq = as.integer(Freq))
   if (is.null(positive) == TRUE) positive <- as.character(Confusion_DF[1,1])
   Precision <- Precision(y_true, y_pred, positive)
   Recall <- Recall(y_true, y_pred, positive)
