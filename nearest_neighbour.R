@@ -3,7 +3,7 @@ library(tidyverse)
 library(reshape2)
 
 #Read the dataset
-path = 'Project_3/Project3_dataset2.txt'
+path = 'Project_3/Project3_dataset1.txt'
 k = 10
 
 data_raw<- read_delim(path, delim = '\t', col_names = FALSE)
@@ -22,6 +22,10 @@ if(is.character(data_raw$X5) == TRUE){
 Accuracy <- function(y_pred, y_true) {
   Accuracy <- mean(y_true == y_pred)
   return(Accuracy)
+}
+ConfusionMatrix <- function(y_pred, y_true) {
+  Confusion_Mat <- table(y_true, y_pred)
+  return(Confusion_Mat)
 }
 
 Precision <- function(y_true, y_pred, positive = NULL) {
@@ -49,7 +53,10 @@ Recall <- function(y_true, y_pred, positive = NULL) {
 }
 
 F1_Score <- function(y_true, y_pred, positive = NULL) {
-  Confusion_DF <- ConfusionDF(y_pred, y_true)
+  Confusion_DF <- transform(as.data.frame(ConfusionMatrix(y_pred, y_true)),
+                            y_true = as.character(y_true),
+                            y_pred = as.character(y_pred),
+                            Freq = as.integer(Freq))
   if (is.null(positive) == TRUE) positive <- as.character(Confusion_DF[1,1])
   Precision <- Precision(y_true, y_pred, positive)
   Recall <- Recall(y_true, y_pred, positive)
@@ -73,12 +80,12 @@ f1 = 0
 knn <- function(data_train, data_test,k){
   data_train <- data_train%>%
     rename(proposed_label = label)%>%
-    rename(testing_row = id)
+    rename(training_row = id)
   
   
   data_test <- data_test%>%
     rename(true_class = label)%>%
-    rename(training_row = id)
+    rename(testing_row = id)
   
   
   #Get the distances of each row with each other row
@@ -91,29 +98,29 @@ knn <- function(data_train, data_test,k){
   
   #Join the training set with the distance table
   #Gives the distance of each row in the training set with every other row
-  data_expand <- data_test%>%
+  data_expand <- data_train%>%
     inner_join(data_dist)
   
   #Group by id to get the top n nearest neighbours for that point
   data_nn <- data_expand %>%
-    group_by(training_row) %>%
+    inner_join(data_test)%>%
+    group_by(testing_row) %>%
     top_n(-k, distance)  %>%
-    arrange(training_row)
+    arrange(testing_row)
   
   #Weigh the data based on distances
   data_weights <- data_nn%>%
-    inner_join(data_train)%>%
     mutate(dist_w = 1/distance^2)
   
   #Classify the data by taking a majority vote
   data_classify <- data_weights  %>%
-    group_by(training_row, proposed_label) %>%
+    group_by(testing_row, proposed_label) %>%
     summarize(votes = sum(dist_w)) %>% 
     top_n(1, votes)
   
   data_result <- data_classify%>%
     inner_join(data_test)%>%
-    select(training_row, proposed_label, true_class)
+    select(testing_row, proposed_label, true_class)
   
   #Evaluation
   acc <- Accuracy(data_result$proposed_label, data_result$true_class)
