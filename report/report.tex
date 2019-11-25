@@ -20,7 +20,7 @@
 \usepackage{listings}
 \begin{document}
 \title{CSE 601 - Classification Algorithms Report}
-\author{Dipack P Panjabi (50291077), Krithika Srinivasan (-)}
+\author{Dipack P Panjabi (50291077), Krithika Srinivasan (50290373)}
 \maketitle
 
 \section{Overview}
@@ -42,15 +42,15 @@ The algorithm works as follows,
 \begin{enumerate}
 \item Partition the data set into training and validation subsets. We do
 this by using the concept of a sliding window to partition the total
-dataset into each fold. In this case, as we use 10 fold cross validation,
+dataset into each type. In this case, as we use 10 fold cross validation,
 the validation dataset is 10\% of the total dataset, with the rest
 used for training.
 \begin{enumerate}
-\item If, for example, we have a total of 500 samples in the dataset, the
+\item If we for example we have a total of 500 samples in the dataset, the
 first 50 samples are the validation set for the first fold, with the
 remaining used for training. The second fold uses samples indexed
 from 50 to 100 as the validation set, with samples indexed 0-49, and
-101-500 as the training set, following the sliding window principle.
+101-500 as the training, following the sliding window principle.
 \item We use this technique to divide the data into 10 sets, with each set
 containing a validation and training dataset.
 \end{enumerate}
@@ -70,16 +70,13 @@ The decision tree algorithm works as follows,
 \item Based on the data we have currently, we select the best feature to
 split the data into two parts. The best feature is selected by splitting
 the data along each feature, for each feature value, and selecting
-the feature, and feature value, that gives us the lowest Gini index.
+the feature, and feature value, that gives us the highest Gini index.
 We also do not use each feature value more than once.
 \begin{enumerate}
 \item A high Gini index means that the data is better distributed between
 both branches of the binary decision tree node. This is important
 in building a balanced decision tree with enough samples on either
-branch. For example, if the Gini index is 0, that means all elements
-belong to the same class, whereas a value of 1, means that elements
-are randomly distributed across classes. We prefer the split that
-has a lower Gini index.
+branch.
 \item Gini index for a tree node can be calculated as follows
 \[
 GINI(x)=1-\sum_{j}[\ p(j|x)\ ]^{2}
@@ -94,19 +91,6 @@ specified tree depth, or we simply do not have the minimum required
 number of samples to justify splitting the dataset any further.
 \end{enumerate}
 \lstinputlisting[breaklines=true,captionpos=b,frame=tb,caption={Example Decision Tree}]{example_decision_tree.txt}
-
-\subsubsection{Feature Handling}
-
-This decision tree handles continuous features such as floats in the
-manner it receives them, i.e., it decides a split based on the actual
-values provided to it.
-
-Binary Categorical features, like the strings given in the two datasets,
-are treated as binary variables, with each sample having either one
-value or the other, allowing for binary splits.
-
-The best feature chosen corresponds to the one with the lowest Gini
-index at a given split point.
 
 \subsubsection{Observations}
 
@@ -164,11 +148,6 @@ Since this algorithm utilises multiple decision trees, we get a predicted
 class label from each tree, with the final predicted class label chosen
 using a simple majority vote.
 
-\subsubsection{Feature Handling}
-
-Since Random Forests simply contain multiple Decision Trees, the features
-are handled in exactly the same way as Decision trees.
-
 \subsubsection{Observations}
 
 \begin{table}[H]
@@ -189,13 +168,13 @@ dataset2 & 0.752/0.702 & 0.825/0.747 & 0.399/0.279 & 0.520/0.372\tabularnewline
 50 trees were planted in the random forest, with the max depth set
 to 5 levels, min number of samples required to split set to 2 samples,
 both the feature and sample sampling ratios set to 40\% for dataset
-1. We plant 100 trees, for dataset 2, with all the other settings
+1. We plant a 100 trees, for dataset 2, with all the other settings
 identical to dataset 1. We found that these settings give us the best
 balance between training and validation dataset performance.
 
 For the first dataset, we see that all 4 metrics are within range
-of each other, compared to the decision tree approach, pointing to
-the fact that the particular dataset is easily divisible.
+of each other, pointing to the fact that the particular dataset is
+easily divisible.
 
 For the second dataset, we see that the most values, except for recall,
 are better than the decision tree approach, but not by much, whereas
@@ -220,4 +199,140 @@ and prediction times compared to a lone decision tree, but in the
 grand scheme of things, it still takes lesser time to do its job compared
 to more complicated algorithms, with results that are just as good
 (if not better) than those same algorithms.
+
+\subsection{Nearest Neighbours}
+The Nearest Neighbours, or k-Nearest Neighbours algorithm is a classification
+algorithm that assigns a label an item based on the labels of the existing
+points closest to it. Our implementation of Nearest Neighbours proceeds as
+follows:
+\begin{enumerate}
+    \item Create a distance matrix of every point in the entire dataset. 
+    Using the reshape2 package, convert it from wide to long format, i.e.
+    convert it into a three-column dataframe called data-dist.
+    \item Filter this distance table by performing a join on the training set
+    by row id. Filter it further by matching the second column in the 
+    distance matrix with the row ids of the testing set. Group the distances by the 
+    top k distances and the row ids of the testing set so that you have the k nearest
+    neighbours of the rows in the testing set. 
+    \item Weigh the distances between each training set row-testing set row pair with
+    the formula \[weight = 1/distance^2\]
+    \item Get the proposed label for each row in the testing set by summing the weights
+    for each label and picking the label with the most 'votes'
+\end{enumerate}
+\subsubsection{Observations}
+
+\begin{table}[H]
+\begin{tabular}{|c|c|c|c|c|}
+\hline 
+Data set & Accuracy & Precision & Recall & F-1 score\tabularnewline
+\hline 
+\hline 
+dataset1 & 0.929 & 0.956 & 0.931 & 0.943\tabularnewline
+\hline 
+dataset2 & 0.638 &  0.819 & 0.685 &  0.744\tabularnewline
+\hline 
+\end{tabular}
+\caption{Nearest Neighbours performance scores}
+\end{table}
+
+The above table shows us the performance metric for the nearest-neighbours algorithm
+with k=10. We observe fairly high metrics for the first dataset and reduced ones for 
+the second dataset. The high performance of nearest neighbours on the first dataset
+suggests a uniformity in how the classes spread out among the data points and a 
+minimal presence of outliers. In the case of the second dataset, the lower performance
+could be because of the presence of a feature with a binary value in opposition to the 
+other features' continuous data. The binary value is converted to a numeric one by simply 
+mapping them to 1 and 0 but it is still in contrast with the remaining features. 
+
+The nearest neighbour algorithm's biggest strength is its simplicity. It does not rely
+on complicated computations, even if the calculation of the distances might be 
+computationally expensive. However, it is highly reliant on points close together having
+the same label. For a dataset in which labels do not depend on the proximity of points,
+nearest neighbours would not be very effective. 
+
+\subsection{Naive Bayesian Classification}
+This classification algorithm uses Bayes' theorem of conditional probability to 
+estimate the likelihood of a data point belonging to one class versus the other. We
+have implemented this algorithm as follows:
+\begin{enumerate}
+    \item First, we convert the continuous data into a more discrete form. In our
+    implementation, we consider 3 quantile cuts for the data and call the ranges
+    'Low', 'Medium' and 'High'. In the second dataset, the one row of non-numeric
+    data is left as is.
+    \item The training set is split into two seperate data frames data-h0 and data-h1, 
+    one with all labels 0 and another with all labels 1. We also calculate the class
+    prior probabilities, ph0 and ph1
+    \item For each column of data in the data-h0 dataframe, we add one row of
+    'Low', 'Medium' and 'High' values for Laplacian correction. 
+    \item We then calculate the number of occurrences of 'Low', 'Medium' and 'High' and
+    divide it by the number of rows in data-h0. This is our conditional probability of 
+    the column. These probabilities are then applied to the corresponding column of the
+    testing set. 
+    \item The probabilities applied to the columns of the testing set are multiplied rowise.
+    This is our descriptor posterior probability for the class 0. We multiply each value 
+    in the new column by ph0. 
+    \item The preceding three steps are repeated for the class 1.
+    \item For each row, the (descriptor posterior probability * prior probability) values are
+    compared. If the value for class 0 is greater, then that row is assigned to class 0,
+    and if not, then it belongs to class 1. 
+\end{enumerate}
+\subsubsection{Observations}
+
+\begin{table}[H]
+\begin{tabular}{|c|c|c|c|c|}
+\hline 
+Data set & Accuracy & Precision & Recall & F-1 score\tabularnewline
+\hline 
+\hline 
+dataset1 & 0.940 & 0.966 & 0.937 & 0.951\tabularnewline
+\hline 
+dataset2 & 0.692 &  0.744 & 0.771 &  0.755\tabularnewline
+\hline 
+\end{tabular}
+\caption{Naive Bayesian performance scores}
+\end{table}
+
+The above are the performance metrics for Naive Bayesian classification. It shows very good
+results on the first dataset, and a reduced performance on the second one. The implication 
+here is in the first data set, higher descriptor posterior probabilities correlate very strongly with
+the associated class, while this relationship is weaker in the second dataset. This could also be 
+attributed to the second dataset having fewer features to work with, giving the classifier less
+information to work with.
+
+The advantages of Naive Bayes classifiers is that they are simple to work with and are on solid
+mathematical footing, i.e. they are well-grounded in theory. They show good performance 
+on most datasets, including ones with many features and are not computationally expensive.
+However, the biggest drawback of this classifier is the independence hypothesis i.e.
+assuming that the features have no relation to each other. If this is not the case and the
+features are correlated, then the classifier may not yield the best results. Additionally,
+when converting the continuous data into a discrete form, the method of conversion would also
+affect the results. Although, we have received fairly good results for both datasets, if we 
+were to change our method of conversion, the results would presumably change.
+
+\section{Competiton}
+For the Kaggle competition, we used a combination of different methods, followed by 
+bootstrap aggregation (bagging) to select the best results for each rows. The 
+following methods were used (accuracy in brackets):
+\begin{enumerate}
+    \item SVM with a linear classification kernel. (0.832)
+    \item Random forests with PCA to consider the first 50 features, 100 trees, 
+    entropy, max depth 8, min samples split 10 (0.844)
+    \item Random forests with PCA - 70 features, 100 trees, gini, max depth 8, min samples split 10 (0.848)
+    \item Random forests with PCA - 70 features, 100 trees, gini, max depth 8, min samples split 5 (0.841)
+    \item Random forests with PCA - 70 features, 100 trees, gini, max depth 10, min samples split 5 (0.847)
+\end{enumerate}
+The results of these models were aggregated and the majority label for each row was considered 
+for the final result. This has given us a score of 0.852. In our investigations, we found that neither
+nearest neighbours, nor Naive Bayesian were yielding very strong results. In regards to SVM, both the
+linear and radial kernels were showing similar performance, so for the sake of simplicity, we selected
+the linear kernel. The Random Forests algorithm has shown consistently strong results, and had 
+many parameters to tune which is why we have made heavy use of it. 
+
+\section{Conclusion}
+For this project, we have implemented four different classification algorithms, Decision Trees,
+Random Forests, Nearest Neighbours and Naive Bayes Classifiers and evaluated their performance
+with accuracy, precision, recall and F1 score using 10-fold cross-validation on two different
+datasets. Interpreting the results of each algorithm illustrated the strengths and weaknesses
+of each algorithm. We were able to use this knowledge along with the technique of bagging to 
+obtain some improvements on our scores in the Kaggle competition for this project
 \end{document}
