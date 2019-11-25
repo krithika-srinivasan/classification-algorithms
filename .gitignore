@@ -1,3 +1,6 @@
 **/__pycache__/
 **/*.lyx#
 kaggle/output/
+report/report.aux
+report/report.log
+report/report.pdf
