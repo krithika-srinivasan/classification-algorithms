@@ -12,6 +12,7 @@ def setup_argparser():
     parser.add_argument("--file", help="File to use for analysis", type=str)
     parser.add_argument("--max-depth", help="Max depth of the tree", type=int, default=3)
     parser.add_argument("--min-size", help="Min number of samples required to potentially split a node", type=int, default=2)
+    parser.add_argument("--validate", help="Enable 10-fold cross validation", action="store_true", default=False)
     return parser
 
 class TreeNode:
@@ -226,6 +227,7 @@ def main():
     filename = args.file
     max_depth = args.max_depth
     min_size = args.min_size
+    validate = args.validate
 
     x, labels = import_file(filename)
     dt = DecisionTree(max_depth=max_depth, min_size=min_size)
@@ -237,11 +239,12 @@ def main():
     print("Naive results")
     print("Accuracy: {}, Precision: {}, Recall: {}, F-1: {}".format(acc, p, r, f1))
 
-    ten_cv = CrossValidation(k=10)
-    dt = DecisionTree(max_depth=max_depth, min_size=min_size)
-    train_scores, val_scores, *_ = ten_cv.cross_validate(dt, x, labels)
-    print("10-fold cross validation")
-    print("Training scores: {0}\nValidation scores: {1}".format(train_scores, val_scores))
+    if validate:
+        ten_cv = CrossValidation(k=10)
+        dt = DecisionTree(max_depth=max_depth, min_size=min_size)
+        train_scores, val_scores, *_ = ten_cv.cross_validate(dt, x, labels)
+        print("10-fold cross validation")
+        print("Training scores: {0}\nValidation scores: {1}".format(train_scores, val_scores))
     return
 
 if __name__ == "__main__":
